@@ -18,7 +18,6 @@ public class TarjetaMembresiaController {
     @GetMapping("/saldo")
     public ResponseEntity<?> consultarSaldo(@RequestParam String numeroTarjeta) {
         Optional<TarjetaMembresia> tarjetaOpt = tarjetaMembresiaRepository.findByNumeroTarjeta(numeroTarjeta);
-
         if (tarjetaOpt.isPresent()) {
             TarjetaMembresia tarjeta = tarjetaOpt.get();
             return ResponseEntity.ok(tarjeta.getSaldo());
