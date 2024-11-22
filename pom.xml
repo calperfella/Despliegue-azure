@@ -17,22 +17,25 @@
 	</properties>
 
 	<dependencies>
-		<!-- Dependencia para Spring Boot Starter Web -->
+		<!-- Spring Boot Starter Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring-boot.version}</version>
 		</dependency>
 
-		<!-- Dependencia para Spring Boot Starter Data JPA -->
+		<!-- Spring Boot Starter Data JPA -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring-boot.version}</version>
 		</dependency>
 
-		<!-- Dependencia del conector MySQL -->
+		<!-- MySQL Connector -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.28</version> <!-- Usar una versión disponible -->
 		</dependency>
 
 		<!-- Lombok -->
@@ -42,15 +45,19 @@
 			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Spring Boot Starter Validation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+			<version>${spring-boot.version}</version>
 		</dependency>
 
-		<!-- Dependencia para pruebas -->
+		<!-- Spring Boot Starter Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring-boot.version}</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -61,18 +68,26 @@
 		</dependency>
 	</dependencies>
 
+	<repositories>
+		<repository>
+			<id>mysql-repo</id>
+			<url>https://dev.mysql.com/maven/</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
-			<!-- Plugin para Spring Boot -->
+			<!-- Spring Boot Maven Plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
-			<!-- Plugin de compilación -->
+			<!-- Maven Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
