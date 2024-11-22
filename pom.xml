@@ -14,6 +14,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-boot.version>3.1.0</spring-boot.version>
+		<h2.version>2.1.214</h2.version> <!-- Versión añadida para H2 -->
 	</properties>
 
 	<dependencies>
@@ -66,6 +67,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<!-- H2 Database for Testing -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version> <!-- Versión añadida -->
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -74,6 +83,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version> <!-- Versión añadida -->
 			</plugin>
 
 			<!-- Maven Compiler Plugin -->
