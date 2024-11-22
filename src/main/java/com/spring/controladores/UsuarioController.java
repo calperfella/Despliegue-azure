@@ -40,6 +40,8 @@ public class UsuarioController {
             return ResponseEntity.ok(compras);
         } else {
             return ResponseEntity.badRequest().body("Usuario no encontrado.");
+
+            
         }
     }
 }
