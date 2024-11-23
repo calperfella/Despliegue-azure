@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Table(name = "usuarios")
 @Data
@@ -39,4 +38,16 @@ public class Usuario {
 
     @Column(name = "tarjeta_membresia_id")
     private Long tarjetaMembresiaId;
+
+    @Column(name = "correo", nullable = false)
+    private String correo;
+
+    @Column(name = "celular", nullable = false)
+    private String celular;
+
+    @Column(name = "direccion", nullable = false)
+    private String direccion;
+
+    @Column(name = "identificacion_nacional", nullable = false)
+    private String identificacionNacional;
 }

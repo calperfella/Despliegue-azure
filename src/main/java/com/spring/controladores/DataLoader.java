@@ -35,10 +35,35 @@ public class DataLoader implements CommandLineRunner {
         TarjetaMembresia tarjeta1 = new TarjetaMembresia(null, "1111222233334444", 100000);
         TarjetaMembresia tarjeta2 = new TarjetaMembresia(null, "5555666677778888", 150000);
 
-        tarjetaMembresiaRepository.saveAll(Arrays.asList(tarjeta1, tarjeta2));
+        Usuario usuario1 = new Usuario(
+                null,
+                "Juan Pérez",
+                "Bogotá",
+                "Colombia",
+                30,
+                "Masculino",
+                "Ingeniero",
+                tarjeta1.getId(),
+                "juan.perez@gmail.com",
+                "1234567890",
+                "Calle 123 #45-67",
+                "123456789"
+        );
 
-        Usuario usuario1 = new Usuario(null, "Juan Pérez", "Bogotá", "Colombia", 30, "Masculino", "Ingeniero", tarjeta1.getId());
-        Usuario usuario2 = new Usuario(null, "María Gómez", "Medellín", "Colombia", 25, "Femenino", "Doctora", tarjeta2.getId());
+        Usuario usuario2 = new Usuario(
+                null,
+                "María Gómez",
+                "Medellín",
+                "Colombia",
+                25,
+                "Femenino",
+                "Doctora",
+                tarjeta2.getId(),
+                "maria.gomez@gmail.com",
+                "0987654321",
+                "Carrera 89 #10-11",
+                "987654321"
+        );
 
         usuarioRepository.saveAll(Arrays.asList(usuario1, usuario2));
     }

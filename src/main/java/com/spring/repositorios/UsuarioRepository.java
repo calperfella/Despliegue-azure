@@ -10,5 +10,4 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByTarjetaMembresiaId(Long tarjetaMembresiaId);
-
 }
