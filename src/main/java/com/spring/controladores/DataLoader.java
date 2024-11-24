@@ -48,7 +48,8 @@ public class DataLoader implements CommandLineRunner {
                 "juan.perez@gmail.com",
                 "1234567890",
                 "Calle 123 #45-67",
-                "123456789"
+                "123456789",
+                "password123"
         ));
 
         saveUsuarioIfNotExists(new Usuario(
@@ -63,7 +64,8 @@ public class DataLoader implements CommandLineRunner {
                 "maria.gomez@gmail.com",
                 "0987654321",
                 "Carrera 89 #10-11",
-                "987654321"
+                "987654321",
+                "securePass"
         ));
     }
 
@@ -86,7 +88,7 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void saveUsuarioIfNotExists(Usuario usuario) {
-        if (!usuarioRepository.existsByCorreo(usuario.getEmail())) {
+        if (!usuarioRepository.existsByCorreo(usuario.getCorreo())) {
             if (usuario.getTarjetaMembresiaId() == null) {
                 throw new IllegalArgumentException("El usuario " + usuario.getNombre() + " no tiene tarjeta de membresía asociada.");
             }

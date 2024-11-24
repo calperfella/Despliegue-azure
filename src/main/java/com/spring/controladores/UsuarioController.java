@@ -66,6 +66,7 @@ public class UsuarioController {
             usuarioExistente.setCelular(usuarioActualizado.getCelular());
             usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
             usuarioExistente.setIdentificacionNacional(usuarioActualizado.getIdentificacionNacional());
+            usuarioExistente.setContraseña(usuarioActualizado.getContraseña()); // Nueva línea
 
             usuarioRepository.save(usuarioExistente);
             return ResponseEntity.ok(usuarioExistente);
@@ -73,7 +74,6 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body("Usuario no encontrado.");
         }
     }
-
     @GetMapping("/compras")
     public ResponseEntity<?> listarComprasUsuario(@RequestParam Long usuarioId) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);

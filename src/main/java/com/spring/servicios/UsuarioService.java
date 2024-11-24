@@ -21,7 +21,12 @@ public class UsuarioService {
         return usuarioRepository.findByTarjetaMembresiaId(tarjetaMembresiaId);
     }
 
+
     public Usuario saveOrUpdateUsuario(Usuario usuario) {
+        if (usuario.getContraseña() == null || usuario.getContraseña().isEmpty()) {
+            throw new IllegalArgumentException("La contraseña no puede estar vacía.");
+        }
         return usuarioRepository.save(usuario);
     }
+
 }
