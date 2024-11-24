@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface TarjetaMembresiaRepository extends JpaRepository<TarjetaMembresia, Long> {
     Optional<TarjetaMembresia> findByNumeroTarjeta(String numeroTarjeta);
-
+    boolean existsByNumeroTarjeta(String numeroTarjeta); // Añadir este método
 }
+

@@ -39,7 +39,7 @@ public class Usuario {
     @Column(name = "tarjeta_membresia_id")
     private Long tarjetaMembresiaId;
 
-    @Column(name = "correo", nullable = false)
+    @Column(name = "correo", nullable = false, unique = true) // Agregado unique para evitar duplicados
     private String correo;
 
     @Column(name = "celular", nullable = false)
@@ -50,4 +50,14 @@ public class Usuario {
 
     @Column(name = "identificacion_nacional", nullable = false)
     private String identificacionNacional;
+
+    // Método personalizado para obtener el correo con getEmail()
+    public String getEmail() {
+        return this.correo;
+    }
+
+    // Método personalizado para establecer el correo con setEmail()
+    public void setEmail(String email) {
+        this.correo = email;
+    }
 }

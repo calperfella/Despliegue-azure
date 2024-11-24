@@ -8,6 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-
     Optional<Usuario> findByTarjetaMembresiaId(Long tarjetaMembresiaId);
+
+    // Cambiado de existsByEmail a existsByCorreo para coincidir con la entidad
+    boolean existsByCorreo(String correo);
 }

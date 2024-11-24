@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -26,16 +24,17 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Libro libro1 = new Libro(null, "El Quijote", "123456789", 60000, 10, "https://images-na.ssl-images-amazon.com/images/I/61HOpyVqSeL.jpg");
-        Libro libro2 = new Libro(null, "Cien Años de Soledad", "987654321", 70000, 30, "https://www.rae.es/sites/default/files/portada_cien_anos_de_soledad_0.jpg");
-        Libro libro3 = new Libro(null, "La Odisea", "654321987", 80000, 15, "https://www.loqueleo.com/do/uploads/2021/08/resized/600_portada-la-odisea.jpg");
+        // Verificar y guardar libros
+        saveLibroIfNotExists(new Libro(null, "El Quijote", "123456789", 60000, 10, "https://images-na.ssl-images-amazon.com/images/I/61HOpyVqSeL.jpg"));
+        saveLibroIfNotExists(new Libro(null, "Cien Años de Soledad", "987654321", 70000, 30, "https://www.rae.es/sites/default/files/portada_cien_anos_de_soledad_0.jpg"));
+        saveLibroIfNotExists(new Libro(null, "La Odisea", "654321987", 80000, 15, "https://www.loqueleo.com/do/uploads/2021/08/resized/600_portada-la-odisea.jpg"));
 
-        libroRepository.saveAll(Arrays.asList(libro1, libro2, libro3));
+        // Verificar y guardar tarjetas de membresía
+        saveTarjetaIfNotExists(new TarjetaMembresia(null, "1111222233334444", 100000));
+        saveTarjetaIfNotExists(new TarjetaMembresia(null, "5555666677778888", 150000));
 
-        TarjetaMembresia tarjeta1 = new TarjetaMembresia(null, "1111222233334444", 100000);
-        TarjetaMembresia tarjeta2 = new TarjetaMembresia(null, "5555666677778888", 150000);
-
-        Usuario usuario1 = new Usuario(
+        // Verificar y guardar usuarios
+        saveUsuarioIfNotExists(new Usuario(
                 null,
                 "Juan Pérez",
                 "Bogotá",
@@ -43,14 +42,14 @@ public class DataLoader implements CommandLineRunner {
                 30,
                 "Masculino",
                 "Ingeniero",
-                tarjeta1.getId(),
+                null, // Esto será actualizado después de guardar las tarjetas
                 "juan.perez@gmail.com",
                 "1234567890",
                 "Calle 123 #45-67",
                 "123456789"
-        );
+        ));
 
-        Usuario usuario2 = new Usuario(
+        saveUsuarioIfNotExists(new Usuario(
                 null,
                 "María Gómez",
                 "Medellín",
@@ -58,13 +57,29 @@ public class DataLoader implements CommandLineRunner {
                 25,
                 "Femenino",
                 "Doctora",
-                tarjeta2.getId(),
+                null, // Esto será actualizado después de guardar las tarjetas
                 "maria.gomez@gmail.com",
                 "0987654321",
                 "Carrera 89 #10-11",
                 "987654321"
-        );
+        ));
+    }
 
-        usuarioRepository.saveAll(Arrays.asList(usuario1, usuario2));
+    private void saveLibroIfNotExists(Libro libro) {
+        if (!libroRepository.existsByIsbn(libro.getIsbn())) {
+            libroRepository.save(libro);
+        }
+    }
+
+    private void saveTarjetaIfNotExists(TarjetaMembresia tarjeta) {
+        if (!tarjetaMembresiaRepository.existsByNumeroTarjeta(tarjeta.getNumeroTarjeta())) {
+            tarjetaMembresiaRepository.save(tarjeta);
+        }
+    }
+
+    private void saveUsuarioIfNotExists(Usuario usuario) {
+        if (!usuarioRepository.existsByCorreo(usuario.getEmail())) {
+            usuarioRepository.save(usuario);
+        }
     }
 }
