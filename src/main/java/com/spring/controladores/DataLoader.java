@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -33,7 +35,7 @@ public class DataLoader implements CommandLineRunner {
         saveTarjetaIfNotExists(new TarjetaMembresia(null, "1111222233334444", 100000));
         saveTarjetaIfNotExists(new TarjetaMembresia(null, "5555666677778888", 150000));
 
-        // Verificar y guardar usuarios
+        // Verificar y guardar usuarios con tarjetas asignadas
         saveUsuarioIfNotExists(new Usuario(
                 null,
                 "Juan Pérez",
@@ -42,7 +44,7 @@ public class DataLoader implements CommandLineRunner {
                 30,
                 "Masculino",
                 "Ingeniero",
-                null, // Esto será actualizado después de guardar las tarjetas
+                findTarjetaByNumero("1111222233334444"),
                 "juan.perez@gmail.com",
                 "1234567890",
                 "Calle 123 #45-67",
@@ -57,7 +59,7 @@ public class DataLoader implements CommandLineRunner {
                 25,
                 "Femenino",
                 "Doctora",
-                null, // Esto será actualizado después de guardar las tarjetas
+                findTarjetaByNumero("5555666677778888"),
                 "maria.gomez@gmail.com",
                 "0987654321",
                 "Carrera 89 #10-11",
@@ -68,18 +70,36 @@ public class DataLoader implements CommandLineRunner {
     private void saveLibroIfNotExists(Libro libro) {
         if (!libroRepository.existsByIsbn(libro.getIsbn())) {
             libroRepository.save(libro);
+            System.out.println("Libro guardado: " + libro.getTitulo());
+        } else {
+            System.out.println("Libro ya existe: " + libro.getTitulo());
         }
     }
 
     private void saveTarjetaIfNotExists(TarjetaMembresia tarjeta) {
         if (!tarjetaMembresiaRepository.existsByNumeroTarjeta(tarjeta.getNumeroTarjeta())) {
             tarjetaMembresiaRepository.save(tarjeta);
+            System.out.println("Tarjeta de membresía guardada: " + tarjeta.getNumeroTarjeta());
+        } else {
+            System.out.println("Tarjeta de membresía ya existe: " + tarjeta.getNumeroTarjeta());
         }
     }
 
     private void saveUsuarioIfNotExists(Usuario usuario) {
         if (!usuarioRepository.existsByCorreo(usuario.getEmail())) {
+            if (usuario.getTarjetaMembresiaId() == null) {
+                throw new IllegalArgumentException("El usuario " + usuario.getNombre() + " no tiene tarjeta de membresía asociada.");
+            }
             usuarioRepository.save(usuario);
+            System.out.println("Usuario guardado: " + usuario.getNombre());
+        } else {
+            System.out.println("Usuario ya existe: " + usuario.getNombre());
         }
+    }
+
+    private Long findTarjetaByNumero(String numeroTarjeta) {
+        Optional<TarjetaMembresia> tarjeta = tarjetaMembresiaRepository.findByNumeroTarjeta(numeroTarjeta);
+        return tarjeta.map(TarjetaMembresia::getId).orElseThrow(() ->
+                new IllegalArgumentException("La tarjeta con número " + numeroTarjeta + " no existe."));
     }
 }
