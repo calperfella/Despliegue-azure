@@ -5,10 +5,12 @@ import com.spring.modelos.Usuario;
 import com.spring.repositorios.CompraRepository;
 import com.spring.repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -74,6 +76,26 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body("Usuario no encontrado.");
         }
     }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        String correo = credentials.get("correo");
+        String contrasena = credentials.get("contrasena");
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(correo);
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            if (usuario.getContraseña().equals(contrasena)) {
+                return ResponseEntity.ok(usuario);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        }
+    }
+
+
     @GetMapping("/compras")
     public ResponseEntity<?> listarComprasUsuario(@RequestParam Long usuarioId) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
