@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/compras")
+@CrossOrigin(origins = "http://localhost:4200")
+
 public class CompraController {
 
     @Autowired

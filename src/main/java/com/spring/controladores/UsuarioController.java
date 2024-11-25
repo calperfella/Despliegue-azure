@@ -15,6 +15,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "http://localhost:4200")
+
 public class UsuarioController {
 
     @Autowired
@@ -30,19 +32,15 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
+    public ResponseEntity<?> obtenerUsuarioPorId(@PathVariable Long id) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
 
         if (usuarioOpt.isPresent()) {
             return ResponseEntity.ok(usuarioOpt.get());
         } else {
-            Usuario errorUsuario = new Usuario();
-            errorUsuario.setNombre("Usuario no encontrado");
-            return ResponseEntity.badRequest().body(errorUsuario);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
         }
     }
-
-
 
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
@@ -51,41 +49,67 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioActualizado) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
+    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioActualizado) {
+        return usuarioRepository.findById(id)
+                .map(usuarioExistente -> {
+                    // Actualizamos solo los campos no nulos del usuario
+                    if (usuarioActualizado.getNombre() != null) {
+                        usuarioExistente.setNombre(usuarioActualizado.getNombre());
+                    }
+                    if (usuarioActualizado.getCiudad() != null) {
+                        usuarioExistente.setCiudad(usuarioActualizado.getCiudad());
+                    }
+                    if (usuarioActualizado.getPais() != null) {
+                        usuarioExistente.setPais(usuarioActualizado.getPais());
+                    }
+                    if (usuarioActualizado.getEdad() > 0) {
+                        usuarioExistente.setEdad(usuarioActualizado.getEdad());
+                    }
+                    if (usuarioActualizado.getSexo() != null) {
+                        usuarioExistente.setSexo(usuarioActualizado.getSexo());
+                    }
+                    if (usuarioActualizado.getProfesion() != null) {
+                        usuarioExistente.setProfesion(usuarioActualizado.getProfesion());
+                    }
+                    if (usuarioActualizado.getTarjetaMembresiaId() != null) {
+                        usuarioExistente.setTarjetaMembresiaId(usuarioActualizado.getTarjetaMembresiaId());
+                    }
+                    if (usuarioActualizado.getCorreo() != null) {
+                        usuarioExistente.setCorreo(usuarioActualizado.getCorreo());
+                    }
+                    if (usuarioActualizado.getCelular() != null) {
+                        usuarioExistente.setCelular(usuarioActualizado.getCelular());
+                    }
+                    if (usuarioActualizado.getDireccion() != null) {
+                        usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
+                    }
+                    if (usuarioActualizado.getIdentificacionNacional() != null) {
+                        usuarioExistente.setIdentificacionNacional(usuarioActualizado.getIdentificacionNacional());
+                    }
+                    if (usuarioActualizado.getContraseña() != null) {
+                        usuarioExistente.setContraseña(usuarioActualizado.getContraseña());
+                    }
 
-        if (usuarioOpt.isPresent()) {
-            Usuario usuarioExistente = usuarioOpt.get();
-
-            usuarioExistente.setNombre(usuarioActualizado.getNombre());
-            usuarioExistente.setCiudad(usuarioActualizado.getCiudad());
-            usuarioExistente.setPais(usuarioActualizado.getPais());
-            usuarioExistente.setEdad(usuarioActualizado.getEdad());
-            usuarioExistente.setSexo(usuarioActualizado.getSexo());
-            usuarioExistente.setProfesion(usuarioActualizado.getProfesion());
-            usuarioExistente.setTarjetaMembresiaId(usuarioActualizado.getTarjetaMembresiaId());
-            usuarioExistente.setCorreo(usuarioActualizado.getCorreo());
-            usuarioExistente.setCelular(usuarioActualizado.getCelular());
-            usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
-            usuarioExistente.setIdentificacionNacional(usuarioActualizado.getIdentificacionNacional());
-            usuarioExistente.setContraseña(usuarioActualizado.getContraseña()); // Nueva línea
-
-            usuarioRepository.save(usuarioExistente);
-            return ResponseEntity.ok(usuarioExistente);
-        } else {
-            return ResponseEntity.badRequest().body("Usuario no encontrado.");
-        }
+                    // Guardamos el usuario actualizado y devolvemos la respuesta
+                    Usuario usuarioGuardado = usuarioRepository.save(usuarioExistente);
+                    return ResponseEntity.ok(usuarioGuardado);
+                })
+                // Si el usuario no existe, devolvemos un 404
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
+
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
         String correo = credentials.get("correo");
-        String contrasena = credentials.get("contrasena");
+        String contraseña = credentials.get("contraseña");
 
         Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(correo);
 
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            if (usuario.getContraseña().equals(contrasena)) {
+            if (usuario.getContraseña().equals(contraseña)) {
                 return ResponseEntity.ok(usuario);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
@@ -94,7 +118,6 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
         }
     }
-
 
     @GetMapping("/compras")
     public ResponseEntity<?> listarComprasUsuario(@RequestParam Long usuarioId) {
@@ -105,7 +128,7 @@ public class UsuarioController {
             List<Compra> compras = compraRepository.findByUsuario(usuario);
             return ResponseEntity.ok(compras);
         } else {
-            return ResponseEntity.badRequest().body("Usuario no encontrado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
         }
     }
 }
